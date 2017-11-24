@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lanou.mapper.UserMapper">
+
+    <!--<sql id="userSql">-->
+    <!--b_user.id uid,-->
+    <!--b_user.name,-->
+    <!--b_user.password,-->
+    <!--b_user.level,-->
+    <!--b_user.des,-->
+    <!--b_user.tel,-->
+    <!--b_user.address-->
+    <!--</sql>-->
+
+    <!--<sql id="blogSql">-->
+    <!--b_blog.id bid,-->
+    <!--b_blog.title,-->
+    <!--b_blog.des,-->
+    <!--b_blog.content,-->
+    <!--b_blog.userId-->
+
+    <!--</sql>-->
+
+    <!--<resultMap id="userMap" type="com.lanou.domain.User">-->
+    <!--<id column="id" property="id"/>-->
+    <!--<result column="name" property="name"/>-->
+    <!--<result column="password" property="password"/>-->
+    <!--<result column="level" property="level"/>-->
+    <!--<result column="des" property="des"/>-->
+    <!--<result column="tel" property="tel"/>-->
+    <!--<result column="address" property="address"/>-->
+    <!--</resultMap>-->
+    <!--<resultMap id="userAndBlogMap" type="com.lanou.domain.User" extends="userMap">-->
+    <!--<collection property="blogList" ofType="com.lanou.domain.Blog">-->
+    <!--<id column="id" property="id"/>-->
+    <!--<result column="title" property="title"/>-->
+    <!--<result column="des" property="des"/>-->
+    <!--<result column="content" property="content"/>-->
+    <!--</collection>-->
+    <!--</resultMap>-->
+
+    <!--查询验证是否有此用户-->
+    <select id="findByName"
+            parameterType="com.lanou.domain.User"
+            resultType="com.lanou.domain.User">
+        SELECT * FROM b_user WHERE name=#{name} AND password = #{password}
+    </select>
+
+    <!--查询博客-->
+    <select id="findBlogByCotnt" parameterType="com.lanou.domain.BlogExt"
+            resultType="com.lanou.domain.Blog">
+        SELECT * FROM b_blog WHERE userId = #{uid}
+        <if test="content != null and content != ''">
+            AND
+            (title LIKE '%${content}%'
+            OR
+            des LIKE '%${content}%')
+        </if>
+    </select>
+
+
+    <!--根据id查博客详情-->
+    <select id="findBlog"
+            parameterType="int"
+            resultType="com.lanou.domain.Blog">
+        SELECT * FROM b_blog WHERE id = #{value}
+    </select>
+
+    <!--添加博客-->
+    <insert id="addBlog" parameterType="com.lanou.domain.Blog">
+        INSERT INTO b_blog(title,des,content,userId) VALUES
+        (#{title},#{des},#{content},#{userId})
+    </insert>
+
+    <!--添加用户-->
+    <insert id="addUser" parameterType="com.lanou.domain.User">
+        INSERT INTO b_user(name,password,level,des,tel,address) VALUES
+        (#{name},#{password},#{level},#{des},#{tel},#{address})
+    </insert>
+
+    <!--删除博客-->
+    <delete id="deleteBlog" parameterType="com.lanou.domain.Blog">
+        DELETE FROM b_blog WHERE id = #{id} AND userId = #{userId}
+    </delete>
+
+    <!--更新博客-->
+    <update id="updateBlog" parameterType="com.lanou.domain.Blog">
+        UPDATE b_blog SET title=#{title},des=#{des},content=#{content}
+        WHERE id=#{id} AND userId=#{userId}
+    </update>
+
+</mapper>
